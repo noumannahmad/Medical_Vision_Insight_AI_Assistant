@@ -11,8 +11,9 @@ Upload an image, ask a question, and get AI-powered insights in real time.
 
 ---
 
-##📂 Project Structure
+## 📂 Project Structure
 
+```
 MEDICAL_VISION_INSIGHT_AI_ASSISTANT/
 │
 ├── app.py               # FastAPI application (Web UI)
@@ -25,7 +26,7 @@ MEDICAL_VISION_INSIGHT_AI_ASSISTANT/
 ├── testImg1.jpg         # Sample image for testing
 ├── testImg2.jpg         # Another sample image
 └── interface.png    # UI screenshot for README
-
+```
 ---
 
 ## ✅ Features
