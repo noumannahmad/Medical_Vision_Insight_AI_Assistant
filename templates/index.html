@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Medical Vision Insight AI Assistant</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://kit.fontawesome.com/your-fontawesome-kit.js" crossorigin="anonymous"></script>
+
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-tr from-slate-900 via-slate-800 to-slate-900 text-gray-100 min-h-screen">
+
+  <div class="max-w-5xl mx-auto px-6 py-10">
+
+    <!-- Header -->
+    <header class="text-center mb-14">
+      <div class="inline-flex items-center justify-center gap-4">
+        <i class="fas fa-eye text-5xl text-emerald-400 drop-shadow"></i>
+        <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight text-cyan-300">
+            Medical Vision Insight AI Assistant
+        </h1>
+      </div>
+      <p class="text-sm text-gray-400 mt-2 italic">
+        Analyze questions — image is uploaded but not interpreted yet
+      </p>
+    </header>
+
+    <!-- Upload and Query Section -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-10 mb-12">
+
+      <!-- Image Upload -->
+      <section class="bg-slate-800 p-6 rounded-xl border border-slate-600 shadow-md">
+        <h2 class="text-lg font-semibold text-cyan-400 mb-4">Upload an Image</h2>
+        <button id="upload-btn" class="w-full bg-cyan-600 hover:bg-cyan-700 text-white py-2 px-4 rounded-lg font-medium">
+          📁 Select Image
+        </button>
+        <input type="file" id="image-upload" accept="image/*" class="hidden" />
+        <div id="image-container" class="hidden mt-4">
+          <img id="display-image" src="" alt="Uploaded" class="rounded-lg border border-slate-700 shadow" />
+        </div>
+      </section>
+
+      <!-- Text Query -->
+      <section class="bg-slate-800 p-6 rounded-xl border border-slate-600 shadow-md">
+        <h2 class="text-lg font-semibold text-yellow-400 mb-4">Ask Your Question</h2>
+        <textarea id="query-input" rows="4" placeholder="Type your question about the uploaded image..."
+          class="w-full bg-slate-700 text-white p-3 rounded-md border border-slate-600 focus:ring-yellow-400 focus:outline-none"></textarea>
+        <button id="submit-query"
+          class="w-full mt-4 bg-yellow-500 hover:bg-yellow-600 text-black font-semibold py-2 px-4 rounded-md transition">
+          🧠 Submit to AI
+        </button>
+      </section>
+
+    </div>
+
+    <!-- Model Output Section -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div class="bg-slate-800 p-5 rounded-lg border border-slate-700">
+        <h3 class="text-emerald-400 text-lg font-medium mb-2">llama-4-scout-17b-16e-instruct</h3>
+        <div id="response-container-llama1" class="hidden text-sm bg-slate-900 p-3 rounded-md text-gray-200"></div>
+      </div>
+
+      <div class="bg-slate-800 p-5 rounded-lg border border-slate-700">
+        <h3 class="text-emerald-400 text-lg font-medium mb-2">llama-4-maverick-17b-128e-instruct</h3>
+        <div id="response-container-llama2" class="hidden text-sm bg-slate-900 p-3 rounded-md text-gray-200"></div>
+      </div>
+    </div>
+
+    <!-- Error Box -->
+    <div id="error-container" class="hidden mt-10 p-4 bg-red-600 text-white rounded-lg shadow">
+      <p id="error-text"></p>
+    </div>
+
+  </div>
+
+  <!-- JavaScript Logic -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const uploadBtn = document.getElementById('upload-btn');
+      const imageUpload = document.getElementById('image-upload');
+      const displayImage = document.getElementById('display-image');
+      const imageContainer = document.getElementById('image-container');
+      const queryInput = document.getElementById('query-input');
+      const submitQuery = document.getElementById('submit-query');
+      const responseLlama = document.getElementById('response-container-llama1');
+      const responseLlava = document.getElementById('response-container-llama2');
+      const errorContainer = document.getElementById('error-container');
+      const errorText = document.getElementById('error-text');
+
+      uploadBtn.addEventListener('click', () => imageUpload.click());
+
+      imageUpload.addEventListener('change', (event) => {
+        const file = event.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            displayImage.src = e.target.result;
+            imageContainer.classList.remove('hidden');
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+
+      submitQuery.addEventListener('click', async () => {
+        const image = imageUpload.files[0];
+        const query = queryInput.value.trim();
+
+        if (!image || !query) {
+          showError('⚠️ Please select an image and enter your question.');
+          return;
+        }
+
+        const formData = new FormData();
+        formData.append('image', image);
+        formData.append('query', query);
+
+        try {
+          submitQuery.disabled = true;
+          submitQuery.textContent = 'Thinking... 🤖';
+
+          const response = await fetch('/upload_and_query', {
+            method: 'POST',
+            body: formData
+          });
+
+          const result = await response.json();
+
+          if (!response.ok && result.detail) {
+            throw new Error(result.detail);
+          }
+
+          const llamaContent = typeof result.llama1 === 'string' && result.llama1.trim()
+            ? marked.parse(result.llama1)
+            : '<p class="text-gray-400">⚠️ No output from llama-4-scout-17b-16e-instruct.</p>';
+
+          const llavaContent = typeof result.llama2 === 'string' && result.llama2.trim()
+            ? marked.parse(result.llama2)
+            : '<p class="text-gray-400">⚠️ No output from llama-4-maverick-17b-128e-instruct.</p>';
+
+          responseLlama.innerHTML = llamaContent;
+          responseLlava.innerHTML = llavaContent;
+
+          responseLlama.classList.remove('hidden');
+          responseLlava.classList.remove('hidden');
+          errorContainer.classList.add('hidden');
+
+        } catch (error) {
+          console.error('Error:', error);
+          showError(error.message || 'Something went wrong while processing your request.');
+        } finally {
+          submitQuery.disabled = false;
+          submitQuery.textContent = '🧠 Submit to AI';
+        }
+      });
+
+      function showError(message) {
+        errorText.textContent = message;
+        errorContainer.classList.remove('hidden');
+        responseLlama.classList.add('hidden');
+        responseLlava.classList.add('hidden');
+      }
+    });
+  </script>
+</body>
+</html>
