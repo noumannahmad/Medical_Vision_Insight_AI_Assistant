@@ -11,25 +11,20 @@ Upload an image, ask a question, and get AI-powered insights in real time.
 
 ---
 
-## 📂 Project Structure
+📂 Project Structure
 
 MEDICAL_VISION_INSIGHT_AI_ASSISTANT/
 │
-├── app.py # FastAPI application (Web UI)
-├── main.py # CLI tool for image analysis
+├── app.py               # FastAPI application (Web UI)
+├── main.py              # CLI tool for image analysis
 ├── templates/
-│ └── index.html # HTML template for UI
-├── static/ # Static assets (CSS, JS)
-├── .env # Environment variables (GROQ API key)
-├── README.md # Documentation
-├── testImg1.jpg # Sample image for testing
-├── testImg2.jpg # Another sample image
-└── screenshots/
-└── interface.png # UI screenshot for README
-
-yaml
-Copy
-Edit
+│   └── index.html       # HTML template for UI
+├── static/              # Static assets (CSS, JS)
+├── .env                 # Environment variables (GROQ API key)
+├── README.md            # Documentation
+├── testImg1.jpg         # Sample image for testing
+├── testImg2.jpg         # Another sample image
+└── interface.png    # UI screenshot for README
 
 ---
 
