@@ -21,6 +21,7 @@ MEDICAL_VISION_INSIGHT_AI_ASSISTANT/
 ├── static/              # Static assets (CSS, JS)
 ├── .env                 # Environment variables (GROQ API key)
 ├── README.md            # Documentation
+├── requirements.txt     # Install Dependencies
 ├── testImg1.jpg         # Sample image for testing
 ├── testImg2.jpg         # Another sample image
 └── interface.png    # UI screenshot for README
