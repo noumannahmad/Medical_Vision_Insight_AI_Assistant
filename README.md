@@ -11,7 +11,7 @@ Upload an image, ask a question, and get AI-powered insights in real time.
 
 ---
 
-📂 Project Structure
+##📂 Project Structure
 
 MEDICAL_VISION_INSIGHT_AI_ASSISTANT/
 │
