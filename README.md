@@ -132,13 +132,7 @@ python main.py
   "llama2": "A man is parting his hair to check for dandruff or scalp condition..."
 }
 ```
-
----
-
-## 📜 License
-MIT License. See [LICENSE](LICENSE) for details.
-
 ---
 
 ## 👨‍💻 Author
-Developed by [Your Name](https://github.com/yourusername)
+Developed by [Nouman Ahmad]([https://github.com/yourusername](https://github.com/noumannahmad))
