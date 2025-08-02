@@ -7,7 +7,7 @@ Upload an image, ask a question, and get AI-powered insights in real time.
 
 ## 📸 Interface Preview
 
-![Interface Screenshot](screenshots/interface.png)
+![Interface Screenshot](interface.png)
 
 ---
 
